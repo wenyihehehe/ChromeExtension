@@ -1,0 +1,21 @@
+body {
+  color: #303333;
+  padding: 1.25rem 1rem;
+  background: #F9FDFF;
+}
+
+#title{
+  font-size: 30px;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+[contenteditable="true"]:active,
+[contenteditable="true"]:focus{
+  border:none;
+  outline:none;
+}
+
+#content{
+  margin: 1rem 0rem;
+}
