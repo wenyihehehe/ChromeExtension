@@ -2,11 +2,15 @@
   font-family: 'Montserrat', sans-serif;
 }
 
+html {
+  background: rgba(249, 249, 245, 1.00);
+}
+
 body {
   color: #303333;
   padding: 1.25rem 1rem;
   width: 330px;
-  background: #F9FDFF;
+  background: rgba(249, 249, 245, 1.00);
 }
 
 p {
@@ -26,6 +30,7 @@ p {
   border-radius: 5px;
   border: 1px solid #333;
   margin: 1rem 0;
+  background: #FEFEFE;
 }
 
 ::-webkit-scrollbar {
@@ -58,8 +63,8 @@ p {
 }
 
 .note {
-  padding: 1rem 0.75rem;
-  background: #FEFEFE;
+  padding: 1rem 0.75rem;    
+  border-bottom: 0.1px solid black;
 }
 
 .note:hover .note-title{
