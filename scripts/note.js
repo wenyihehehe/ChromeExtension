@@ -16,32 +16,94 @@ function getCurrentDateTime(){
 const urlParams = new URLSearchParams(window.location.search);
 const noteId = urlParams.get('id'); 
 if (noteId){
-    const note = new Note(noteId);
+  const note = new Note(noteId);
 
-    let title = document.getElementById('title');
-    if (title){
-        title.innerHTML = note.getTitle();
-        document.title = note.getTitle();
-        title.addEventListener('input', function(){
-            note.updateTitle(this.innerHTML);
-            note.saveToLocalStorage();
-            document.title = this.innerHTML;
-        })
-    }
+  let title = document.getElementById('title');
+  if (title){
+      title.innerHTML = note.getTitle();
+      document.title = note.getTitle();
+      title.addEventListener('input', function(){
+          note.updateTitle(this.innerHTML);
+          note.saveToLocalStorage();
+          document.title = this.innerHTML;
+      })
+  }
 
-    let lastEditedDateTime = document.getElementById('lastEditedDateTime');
-    if (lastEditedDateTime){
-        lastEditedDateTime.innerHTML = note.getLastEditedDateTime();
-    }
+  let lastEditedDateTime = document.getElementById('lastEditedDateTime');
+  if (lastEditedDateTime){
+      lastEditedDateTime.innerHTML = note.getLastEditedDateTime();
+  }
 
-    let content = document.getElementById('content');
-    if (content){
-        content.innerHTML = note.getContent();
-        content.addEventListener('input', function(){
-            note.updateContent(this.innerHTML);
-            note.saveToLocalStorage();
-        })
+
+  var quill = new Quill('#content', {
+    theme: 'snow'
+  });
+
+  quill.setContents(note.getContent())
+
+  // Check if there is content
+  if (quill.getLength() > 0) {
+    var lastIndex = quill.getLength() - 1;
+    quill.setSelection(lastIndex, 0);
+  }
+
+  // Event listener for text-change event
+  quill.on('text-change', function(delta, oldDelta, source) {
+    if (source === 'user') {
+      var content = quill.getContents();
+      note.updateContent(content);
+      note.saveToLocalStorage();
     }
+  });
+
+  // Add a custom binding for Ctrl+Shift+1 to insert <h1>
+  quill.keyboard.addBinding({
+    key: '1',
+    shiftKey: true,
+    shortKey: true,
+  }, function(range, context) {
+      // Check if the editor is focused
+      if (quill.hasFocus()) {
+        var format = quill.getFormat(range);
+        if (format && format.header === 1) {
+          quill.format('header', false);
+        } else {
+          quill.format('header', 1);
+        }
+      }
+  });
+
+  // Add a custom binding for Ctrl+Shift+2 to insert <h2>
+  quill.keyboard.addBinding({
+    key: '2',
+    shiftKey: true,
+    shortKey: true,
+  }, function(range, context) {
+      if (quill.hasFocus()) {
+        var format = quill.getFormat(range);
+        if (format && format.header === 2) {
+          quill.format('header', false);
+        } else {
+          quill.format('header', 2);
+        }
+      }
+  });
+
+  // Add a custom binding for Ctrl+Shift+3 to insert <h2>
+  quill.keyboard.addBinding({
+    key: '3',
+    shiftKey: true,
+    shortKey: true,
+  }, function(range, context) {
+      if (quill.hasFocus()) {
+        var format = quill.getFormat(range);
+        if (format && format.header === 3) {
+          quill.format('header', false);
+        } else {
+          quill.format('header', 3);
+        }
+      }
+  });
 } else {
     console.error("ID not found");
 }
