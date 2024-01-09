@@ -34,17 +34,22 @@ function renderNotes(){
   notesContainer.innerHTML = "";
   
   // Get all keys from local storage
-  const allKeys = Object.keys(localStorage);
+  let allKeys = Object.keys(localStorage);
 
   if(allKeys.length){
-      // Iterate through each key and display the corresponding note
+    let notes = [];
+    // Iterate through each key and display the corresponding note
     allKeys.forEach(function (key) {
       const noteData = localStorage.getItem(key);
       if (noteData) {
         const note = JSON.parse(noteData);
-        renderNote(note, key);
+        note.key = key;
+        notes.push(note);
       }
     });
+    
+    notes = notes.sort((a, b) => new Date(b.lastEditedDateTime) - new Date(a.lastEditedDateTime));
+    notes.forEach(x => renderNote(x, x.key));
   } else {
     renderEmpty()
   }
@@ -64,7 +69,7 @@ function renderNotes(){
     contentElement.classList.add('content');
     contentElement.innerHTML = `
       <p class="note-title">${note.title}</p>
-      <p class="description">${note.lastEditedDateTime}</p>
+      <p class="description">${formatDateTime(note.lastEditedDateTime)}</p>
     `;
     contentElement.addEventListener('click', function () {
       let id = this.parentNode.id;
@@ -97,4 +102,17 @@ function renderNotes(){
     `;
     notesContainer.appendChild(emptyElement);
   }
+}
+
+function formatDateTime(date){
+  const options = {
+      weekday: 'long', 
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    };
+  return new Date(date).toLocaleString('en-US', options);
 }

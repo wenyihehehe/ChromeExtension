@@ -1,16 +1,15 @@
-function getCurrentDateTime(){
-    const currentDate = new Date();
-    const options = {
-        weekday: 'long', 
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true,
-      };
-    
-    return currentDate.toLocaleString('en-US', options);
+function formatDateTime(date){
+  const options = {
+      weekday: 'long', 
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    };
+  
+  return new Date(date).toLocaleString('en-US', options);
 }
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -29,11 +28,7 @@ if (noteId){
       })
   }
 
-  let lastEditedDateTime = document.getElementById('lastEditedDateTime');
-  if (lastEditedDateTime){
-      lastEditedDateTime.innerHTML = note.getLastEditedDateTime();
-  }
-
+  setLastUpdatedDateTime(note);
 
   var quill = new Quill('#content', {
     theme: 'snow'
@@ -52,6 +47,7 @@ if (noteId){
     if (source === 'user') {
       var content = quill.getContents();
       note.updateContent(content);
+      setLastUpdatedDateTime(note);
       note.saveToLocalStorage();
     }
   });
@@ -108,16 +104,23 @@ if (noteId){
     console.error("ID not found");
 }
 
+function setLastUpdatedDateTime(note){
+  let lastEditedDateTime = document.getElementById('lastEditedDateTime');
+  if (lastEditedDateTime){
+      lastEditedDateTime.innerHTML = formatDateTime(note.getLastEditedDateTime());
+  }
+}
+
 
 function Note(id) {
     this.id = id;
     this.title = 'New Title';
     this.content = '';
-    this.lastEditedDateTime = getCurrentDateTime();
+    this.lastEditedDateTime = new Date();
   
     // Function to update last edited date time
     this.updateLastEditedDateTime = function () {
-      this.lastEditedDateTime = getCurrentDateTime();
+      this.lastEditedDateTime = new Date();
     };
   
     // Function to get title
